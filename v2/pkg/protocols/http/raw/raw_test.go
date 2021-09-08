@@ -43,6 +43,25 @@ Host: {{Hostname}}:123`, "https://example.com:8080/test/", false)
 	})
 }
 
+func TestParseRawRequestWithFullURL(t *testing.T) {
+	request, err := Parse(`GET https://example2.com/gg/phpinfo.php HTTP/1.1
+Connection: close`, "https://example.com", false)
+	require.Nil(t, err, "could not parse GET request")
+	require.Equal(t, "https://example2.com/gg/phpinfo.php", request.FullURL, "Could not parse request url correctly")
+	require.Equal(t, "/gg/phpinfo.php", request.Path, "Could not parse request path correctly")
+	require.Equal(t, "example2.com", request.Headers["Host"], "Host doesn't match specified full URL")
+
+	t.Run("with-unsafe", func(t *testing.T) {
+		request, err := Parse(`GET https://example2.com/gg/phpinfo.php HTTP/1.1
+		Connection: close`, "https://example.com", true)
+		require.Nil(t, err, "could not parse GET request")
+		// This is the expected full url for unsafe requests that
+		// purposefully send full url as path in the http request
+		require.Equal(t, "https://example.com/https://example2.com/gg/phpinfo.php", request.FullURL, "Could not parse request url correctly")
+		require.Equal(t, "https://example2.com/gg/phpinfo.php", request.Path, "Could not parse request path correctly")
+	})
+}
+
 func TestParseRawRequest(t *testing.T) {
 	request, err := Parse(`GET /manager/html HTTP/1.1
 Host: {{Hostname}}

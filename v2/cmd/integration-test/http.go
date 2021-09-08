@@ -27,6 +27,7 @@ var httpTestcases = map[string]testutils.TestCase{
 	"http/raw-dynamic-extractor.yaml": &httpRawDynamicExtractor{},
 	"http/raw-get-query.yaml":         &httpRawGetQuery{},
 	"http/raw-get.yaml":               &httpRawGet{},
+	"http/raw-get-full-url.yaml":      &httpRawGet{},
 	"http/raw-payload.yaml":           &httpRawPayload{},
 	"http/raw-post-body.yaml":         &httpRawPostBody{},
 	"http/raw-unsafe-request.yaml":    &httpRawUnsafeRequest{},
